@@ -14,6 +14,25 @@ namespace htmlscraperapi.Controllers
         {
             _htmlScraperRepository = htmlScraperRepository;
         }
+        [HttpGet]
+        public ActionResult<IEnumerable<ScrapedContent>> GetAllResults()
+        {
+            try
+            {
+                var results = _htmlScraperRepository.GetAllScrapedContent();
+
+                if (results == null || !results.Any())
+                {
+                    return NoContent();
+                }
+
+                return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
         [HttpPost]
         public async Task<IActionResult> ScrapeHtmlFile(IFormFile htmlFile)
         {
@@ -30,6 +49,25 @@ namespace htmlscraperapi.Controllers
             catch (InvalidOperationException ex)
             {
                 return StatusCode(500, ex.Message);
+            }
+        }
+        [HttpDelete("{id}")]
+        public ActionResult DeleteReport(int id)
+        {
+            try
+            {
+                var deletedReport = _htmlScraperRepository.DeleteScrapedContent(id);
+
+                if (deletedReport == null)
+                {
+                    return NotFound($"Report with ID {id} not found");
+                }
+
+                return Ok($"Report with ID {id} deleted successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
 

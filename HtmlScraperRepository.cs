@@ -7,8 +7,9 @@ namespace htmlscraperapi
 {
     public interface IHtmlScraperRepository
     {
-        
-            Task<object> ScrapeHtmlFile(IFormFile htmlFile);
+        ScrapedContent DeleteScrapedContent(int id);
+        IEnumerable<ScrapedContent> GetAllScrapedContent();
+        Task<object> ScrapeHtmlFile(IFormFile htmlFile);
         
     }
     public class HtmlScraperRepository : IHtmlScraperRepository
@@ -18,6 +19,24 @@ namespace htmlscraperapi
         public HtmlScraperRepository(AppDbContext dbContext)
         {
             _dbContext = dbContext;
+        }
+        public IEnumerable<ScrapedContent> GetAllScrapedContent()
+        {
+            return _dbContext.ScrapedContents.ToList();
+        }
+        public ScrapedContent DeleteScrapedContent(int id)
+        {
+            var reportToDelete = _dbContext.ScrapedContents.Find(id);
+
+            if (reportToDelete == null)
+            {
+                return null; // Indicate that the report with the given ID was not found
+            }
+
+            _dbContext.ScrapedContents.Remove(reportToDelete);
+            _dbContext.SaveChanges();
+
+            return reportToDelete;
         }
 
         public async Task<object> ScrapeHtmlFile(IFormFile htmlFile)
