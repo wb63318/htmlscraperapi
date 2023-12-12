@@ -14,6 +14,17 @@ namespace htmlscraperapi.Controllers
         {
             _htmlScraperRepository = htmlScraperRepository;
         }
+        //[HttpGet("{id:int}")]
+        //public ActionResult GetResult(int id) 
+        //{
+        //    try
+        //    {
+        //        var result = _htmlScraperRepository.GetById(id);
+        //        if (result == null) { return NotFound($"Report with ID {id} not found"); }
+        //        return Ok(result);
+        //    }
+        //    catch (Exception ex) { return StatusCode(500, $"An Error occured: {ex.Message}"); }
+        //}
         [HttpGet]
         public ActionResult<IEnumerable<ScrapedContent>> GetAllResults()
         {
@@ -27,6 +38,25 @@ namespace htmlscraperapi.Controllers
                 }
 
                 return Ok(results);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+        [HttpGet("{id}")]
+        public ActionResult<ScrapedContent> GetReportById(int id)
+        {
+            try
+            {
+                var report = _htmlScraperRepository.GetScrapedContentById(id);
+
+                if (report == null)
+                {
+                    return NotFound($"Report with ID {id} not found");
+                }
+
+                return Ok(report);
             }
             catch (Exception ex)
             {

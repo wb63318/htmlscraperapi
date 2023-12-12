@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using htmlscraperapi.Data;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Net.WebSockets;
 
@@ -9,6 +10,8 @@ namespace htmlscraperapi
     {
         ScrapedContent DeleteScrapedContent(int id);
         IEnumerable<ScrapedContent> GetAllScrapedContent();
+       //Task<ScrapedContent> GetById(int id);
+        ScrapedContent GetScrapedContentById(int id);
         Task<object> ScrapeHtmlFile(IFormFile htmlFile);
         
     }
@@ -20,6 +23,14 @@ namespace htmlscraperapi
         {
             _dbContext = dbContext;
         }
+        public ScrapedContent GetScrapedContentById(int id)
+        {
+            return _dbContext.ScrapedContents.Find(id);
+        }
+        //public  Task<ScrapedContent> GetById(int id)
+        //{
+        //    return _dbContext.ScrapedContents.FirstOrDefaultAsync(x=> x.Id == id);
+        //}
         public IEnumerable<ScrapedContent> GetAllScrapedContent()
         {
             return _dbContext.ScrapedContents.ToList();
